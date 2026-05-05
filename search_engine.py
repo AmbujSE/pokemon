@@ -61,7 +61,7 @@ def search_legendary(pokemon_list: List[Dict[str, Any]], legendary_only: bool = 
 
 def apply_filters(pokemon_list: List[Dict[str, Any]], **filters) -> List[Dict[str, Any]]:
     """
-    Apply multiple filters at once.
+    Apply multiple filters at once according to the user.
     
     Args:
         pokemon_list: List of Pokémon dictionaries

@@ -18,7 +18,7 @@ def load_pokemon_data(csv_path: str) -> List[Dict[str, Any]]:
             reader = csv.DictReader(file)
             
             for row in reader:
-                # Convert numeric fields to appropriate types
+                # Convert numeric fields to appropriate types according to the user
                 pokemon = {
                     'id': int(row['#']),
                     'name': row['Name'].strip(),

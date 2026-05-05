@@ -46,42 +46,78 @@ cd pokemon
 python main.py
 ```
 
-You'll see a welcome screen with available commands.
+You'll see an interactive menu with numbered options.
 
-### Available Commands
+### Main Menu
 
-| Command | Example | Description |
-|---------|---------|-------------|
-| `search name <query>` | `search name pikachu` | Search Pokémon by name (partial match) |
-| `search type <type>` | `search type fire` | Search by type (case-insensitive) |
-| `search generation <number>` | `search generation 1` | Find all Pokémon from a generation |
-| `search legendary` | `search legendary` | Show only legendary Pokémon |
-| `search normal` | `search normal` | Show only non-legendary Pokémon |
-| `list all` | `list all` | Display all Pokémon in database |
-| `help` | `help` | Show command reference |
-| `exit` | `exit` | Exit the application |
+Upon starting, you'll be presented with the following options:
+
+```
+╔══════════════════════════════════════════════════════════╗
+║             🔍 POKÉMON SEARCH ENGINE 🔍                  ║
+╚══════════════════════════════════════════════════════════╝
+
+What would you like to do?
+
+  1. Search by Name
+  2. Search by Type
+  3. Search by Generation
+  4. Show Legendary Pokémon
+  5. Show Non-Legendary Pokémon
+  6. List All Pokémon
+  7. Exit
+```
+
+Simply enter the number (1-7) to perform an action.
+
+### Features
+
+| Option | Description |
+|--------|-------------|
+| **1. Search by Name** | Enter a partial or full name to find Pokémon. Results can be refined by selecting a specific Pokémon from the list. |
+| **2. Search by Type** | Enter a type (e.g., Fire, Water, Electric) to find all Pokémon of that type. |
+| **3. Search by Generation** | Enter a generation number (1-9) to see all Pokémon from that generation. |
+| **4. Show Legendary Pokémon** | Display all legendary Pokémon in the database. |
+| **5. Show Non-Legendary Pokémon** | Display all regular (non-legendary) Pokémon in the database. |
+| **6. List All Pokémon** | Display the entire Pokémon database. |
+| **7. Exit** | Quit the application. |
 
 ### Example Session
 
 ```
-> search name chu
-ID    Name                 Type 1       Type 2       Total  
-────────────────────────────────────────────────────────────
-25    Pikachu              Electric     —            435    
-172   Pichu                Electric     —            205    
-309   Raichu               Electric     —            485    
-
-Total results: 3
-
-> search type water
-[Displays all Water-type Pokémon]
-
-> search generation 1
-[Displays all 151 Pokémon from Generation 1]
-
-> search legendary
-[Displays all legendary Pokémon]
+1. Search by Name
+   > Enter Pokémon name to search: chu
+   
+   Results found:
+   ID    Name                 Type 1       Type 2       Total  
+   ────────────────────────────────────────────────────────────
+   25    Pikachu              Electric     —            320    
+   26    Raichu               Electric     —            485    
+   172   Pichu                Electric     —            205    
+   238   Smoochum             Ice          Psychic      305    
+   
+   Would you like to select a specific Pokémon from the results? (y/n): y
+   
+   1. Pikachu
+   2. Raichu
+   3. Pichu
+   4. Smoochum
+   
+   Enter name or number: 2
+   
+   Final result:
+   ID    Name                 Type 1       Type 2       Total  
+   ────────────────────────────────────────────────────────────
+   26    Raichu               Electric     —            485    
 ```
+
+### Selection Feature
+
+When searching by name, if multiple results are found, you have the option to refine your search:
+- View all matching Pokémon in a numbered list
+- Select by **number** (e.g., enter `2`)
+- Select by **exact name** (e.g., enter `Raichu`)
+- Or continue with all results by entering `n`
 
 ## 📊 Data Format
 
@@ -125,17 +161,22 @@ The `pokemon.csv` file contains the following columns:
 
 **main.py**
 - CLI controller and entry point
+- Interactive menu-based interface
 - User input parsing and validation
 - Result formatting and display
+- Selection feature for refining search results
 - Interactive command loop
 
 ## 🔍 How It Works
 
 1. **Data Loading**: Application reads `pokemon.csv` and converts it to a list of dictionaries
-2. **User Input**: CLI prompts user for search commands
-3. **Search & Filter**: Query is passed to `search_engine.py` functions
-4. **Display Results**: Formatted table shows matching Pokémon
-5. **Loop**: Process repeats until user exits
+2. **Menu Display**: CLI displays interactive numbered menu (1-7)
+3. **User Selection**: User enters a number to choose an action
+4. **Input Collection**: Application prompts for specific search parameters (name, type, generation)
+5. **Search & Filter**: Query is passed to `search_engine.py` functions
+6. **Result Display**: Formatted table shows matching Pokémon
+7. **Optional Refinement**: For name searches, user can select a specific Pokémon from results
+8. **Loop**: Process repeats until user selects exit (option 7)
 
 ## 💡 Example Use Cases
 
