@@ -1,6 +1,6 @@
 import os
 from data_loader import load_pokemon_data
-from search_engine import search_by_name, search_by_type, search_by_generation, search_legendary, apply_filters
+from search_engine import *
 
 
 def display_pokemon(pokemon_list):
@@ -19,29 +19,61 @@ def display_pokemon(pokemon_list):
     print(f"\nTotal results: {len(pokemon_list)}")
 
 
-def show_help():
-    """Display available commands."""
+def select_from_results(pokemon_list):
+    """Allow user to select a specific Pokémon from search results."""
+    if not pokemon_list or len(pokemon_list) <= 1:
+        return pokemon_list
+    
+    print("\nWould you like to select a specific Pokémon from the results? (y/n): ", end="")
+    if input().strip().lower() == "y":
+        print("\nEnter the exact name of the Pokémon you want:")
+        for i, p in enumerate(pokemon_list, 1):
+            print(f"  {i}. {p['name']}")
+        
+        try:
+            choice = input("\nEnter name or number: ").strip()
+            
+            # Try as number first
+            try:
+                idx = int(choice) - 1
+                if 0 <= idx < len(pokemon_list):
+                    return [pokemon_list[idx]]
+            except ValueError:
+                pass
+            
+            # Try as name
+            for p in pokemon_list:
+                if p['name'].lower() == choice.lower():
+                    return [p]
+            
+            print("Pokémon not found in results.")
+            return pokemon_list
+        except Exception as e:
+            print(f"Error: {e}")
+            return pokemon_list
+    
+    return pokemon_list
+
+
+
+def show_menu():
+    """Display the main menu with search options."""
     print("""
-╔═══════════════════════════════════════════════════════════════╗
-║                    POKÉMON SEARCH ENGINE                      ║
-╚═══════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════╗
+║             🔍 POKÉMON SEARCH ENGINE 🔍                  ║
+╚══════════════════════════════════════════════════════════╝
 
-Available Commands:
-  search name <query>          - Search by name (e.g., "search name pikachu")
-  search type <type>           - Search by type (e.g., "search type fire")
-  search generation <number>   - Search by generation (e.g., "search generation 1")
-  search legendary             - Show only legendary Pokémon
-  search normal                - Show only non-legendary Pokémon
-  list all                     - Display all Pokémon
-  help                         - Show this message
-  exit                         - Exit the program
+What would you like to do?
 
-Examples:
-  search name chu
-  search type water
-  search generation 2
-  search legendary
-""")
+  1. Search by Name
+  2. Search by Type
+  3. Search by Generation
+  4. Show Legendary Pokémon
+  5. Show Non-Legendary Pokémon
+  6. List All Pokémon
+  7. Exit
+
+Please enter the number (1-7):""")
 
 
 def main():
@@ -59,62 +91,65 @@ def main():
     print(f"Successfully loaded {len(pokemon_list)} Pokémon!\n")
     
     # Step 2-4: Interactive loop
-    show_help()
-    
     while True:
         try:
-            # Step 2: Get User Input
-            user_input = input("\n> ").strip().lower()
+            # Display menu
+            show_menu()
             
-            if not user_input:
-                continue
+            # Get user input
+            choice = input("\n> ").strip()
             
-            # Step 3: Parse and Call Search Function
-            if user_input == "exit":
-                print("Goodbye!")
-                break
+            if choice == "1":
+                query = input("Enter Pokémon name to search: ").strip()
+                if query:
+                    results = search_by_name(pokemon_list, query)
+                    display_pokemon(results)
+                    results = select_from_results(results)
+                    if results:
+                        display_pokemon(results)
+                else:
+                    print("Please enter a valid name.")
             
-            elif user_input == "help":
-                show_help()
+            elif choice == "2":
+                type_query = input("Enter Pokémon type to search: ").strip()
+                if type_query:
+                    results = search_by_type(pokemon_list, type_query)
+                    display_pokemon(results)
+                else:
+                    print("Please enter a valid type.")
             
-            elif user_input == "list all":
-                display_pokemon(pokemon_list)
-            
-            elif user_input.startswith("search name "):
-                query = user_input.replace("search name ", "").strip()
-                results = search_by_name(pokemon_list, query)
-                # Step 4: Display Results
-                display_pokemon(results)
-            
-            elif user_input.startswith("search type "):
-                type_query = user_input.replace("search type ", "").strip()
-                results = search_by_type(pokemon_list, type_query)
-                display_pokemon(results)
-            
-            elif user_input.startswith("search generation "):
+            elif choice == "3":
                 try:
-                    gen = int(user_input.replace("search generation ", "").strip())
+                    gen = int(input("Enter generation number (1-9): ").strip())
                     results = search_by_generation(pokemon_list, gen)
                     display_pokemon(results)
                 except ValueError:
                     print("Error: Generation must be a number.")
             
-            elif user_input == "search legendary":
+            elif choice == "4":
                 results = search_legendary(pokemon_list, legendary_only=True)
                 display_pokemon(results)
             
-            elif user_input == "search normal":
+            elif choice == "5":
                 results = search_legendary(pokemon_list, legendary_only=False)
                 display_pokemon(results)
             
+            elif choice == "6":
+                display_pokemon(pokemon_list)
+            
+            elif choice == "7":
+                print("Goodbye!")
+                break
+            
             else:
-                print("Unknown command. Type 'help' for available commands.")
+                print("Invalid choice. Please enter a number between 1 and 7.")
         
         except KeyboardInterrupt:
             print("\nGoodbye!")
             break
         except Exception as e:
             print(f"Error: {e}")
+
 
 
 if __name__ == "__main__":
